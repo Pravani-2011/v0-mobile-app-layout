@@ -64,14 +64,14 @@ export function Sidebar() {
   const [user, setUser] = useState<UserData | null>(null)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("rememberme_user")
+    const storedUser = localStorage.getItem("chattrack_user")
     if (storedUser) {
       setUser(JSON.parse(storedUser))
     }
   }, [])
 
   const handleSignOut = () => {
-    localStorage.removeItem("rememberme_user")
+    localStorage.removeItem("chattrack_user")
     router.push("/sign-in")
   }
 
@@ -91,10 +91,10 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex h-16 items-center justify-center border-b border-border px-4">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-          <span className="text-sm font-bold text-primary-foreground">RM</span>
+          <span className="text-sm font-bold text-primary-foreground">CT</span>
         </div>
         <span className="ml-3 overflow-hidden whitespace-nowrap text-sm font-semibold text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-          Remember Me
+          ChatTrack
         </span>
       </div>
 

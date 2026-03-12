@@ -65,7 +65,7 @@ export default function PreferencesPage() {
   const [activeCategory, setActiveCategory] = useState("All")
 
   useEffect(() => {
-    const stored = localStorage.getItem("rememberme_keywords")
+    const stored = localStorage.getItem("chattrack_keywords")
     if (stored) {
       setSelectedCompanies(JSON.parse(stored))
     }
@@ -76,7 +76,7 @@ export default function PreferencesPage() {
       const updated = prev.includes(companyId)
         ? prev.filter((id) => id !== companyId)
         : [...prev, companyId]
-      localStorage.setItem("rememberme_keywords", JSON.stringify(updated))
+      localStorage.setItem("chattrack_keywords", JSON.stringify(updated))
       return updated
     })
   }
@@ -85,18 +85,18 @@ export default function PreferencesPage() {
     const allIds = filteredCompanies.map((c) => c.id)
     const newSelected = [...new Set([...selectedCompanies, ...allIds])]
     setSelectedCompanies(newSelected)
-    localStorage.setItem("rememberme_keywords", JSON.stringify(newSelected))
+    localStorage.setItem("chattrack_keywords", JSON.stringify(newSelected))
   }
 
   const clearAll = () => {
     if (activeCategory === "All") {
       setSelectedCompanies([])
-      localStorage.setItem("rememberme_keywords", JSON.stringify([]))
+      localStorage.setItem("chattrack_keywords", JSON.stringify([]))
     } else {
       const categoryIds = filteredCompanies.map((c) => c.id)
       const newSelected = selectedCompanies.filter((id) => !categoryIds.includes(id))
       setSelectedCompanies(newSelected)
-      localStorage.setItem("rememberme_keywords", JSON.stringify(newSelected))
+      localStorage.setItem("chattrack_keywords", JSON.stringify(newSelected))
     }
   }
 

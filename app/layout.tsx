@@ -7,7 +7,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Remember Me - Lead Tracking Dashboard',
+  title: 'ChatTrack - Lead Tracking Dashboard',
   description: 'Track opportunities and never miss a deadline',
   generator: 'v0.app',
   icons: {

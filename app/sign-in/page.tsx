@@ -52,7 +52,7 @@ export default function SignInPage() {
             .slice(0, 2)
         : formData.email.slice(0, 2).toUpperCase(),
     }
-    localStorage.setItem("rememberme_user", JSON.stringify(userData))
+    localStorage.setItem("chattrack_user", JSON.stringify(userData))
 
     setIsLoading(false)
     router.push("/")
@@ -64,10 +64,10 @@ export default function SignInPage() {
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary">
-            <span className="text-xl font-bold text-primary-foreground">RM</span>
+            <span className="text-xl font-bold text-primary-foreground">CT</span>
           </div>
           <h1 className="mt-4 text-2xl font-bold text-foreground">
-            Remember Me
+            ChatTrack
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {isSignUp

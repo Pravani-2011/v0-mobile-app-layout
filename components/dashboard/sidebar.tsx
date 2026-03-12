@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
@@ -9,7 +9,9 @@ import {
   Settings,
   Archive,
   ChevronRight,
+  LogOut,
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface NavItem {
   icon: React.ElementType
@@ -47,9 +49,29 @@ const navItems: NavItem[] = [
   },
 ]
 
+interface UserData {
+  email: string
+  name: string
+  initials: string
+}
+
 export function Sidebar() {
-  const [activeItem, setActiveItem] = useState("Dashboard")
+  const router = useRouter()
+  const [activeItem, setActiveItem] = useState("Preferences")
   const [expandedItem, setExpandedItem] = useState<string | null>(null)
+  const [user, setUser] = useState<UserData | null>(null)
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("rememberme_user")
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+  }, [])
+
+  const handleSignOut = () => {
+    localStorage.removeItem("rememberme_user")
+    router.push("/sign-in")
+  }
 
   const handleItemClick = (label: string, hasSubItems: boolean) => {
     if (hasSubItems) {
@@ -129,19 +151,26 @@ export function Sidebar() {
 
       {/* User Profile */}
       <div className="border-t border-border p-2">
-        <button className="flex w-full items-center rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium text-foreground">
-            JD
+        <div className="flex w-full items-center rounded-md px-3 py-2.5 text-sm text-muted-foreground">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
+            {user?.initials || "U"}
           </div>
-          <div className="ml-3 overflow-hidden opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-            <p className="whitespace-nowrap text-sm font-medium text-foreground">
-              John Doe
+          <div className="ml-3 min-w-0 flex-1 overflow-hidden opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+            <p className="truncate text-sm font-medium text-foreground">
+              {user?.name || "User"}
             </p>
-            <p className="whitespace-nowrap text-xs text-muted-foreground">
-              Pro Plan
+            <p className="truncate text-xs text-muted-foreground">
+              {user?.email || "user@example.com"}
             </p>
           </div>
-        </button>
+          <button
+            onClick={handleSignOut}
+            className="ml-2 shrink-0 rounded-md p-1.5 text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+            title="Sign out"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </aside>
   )

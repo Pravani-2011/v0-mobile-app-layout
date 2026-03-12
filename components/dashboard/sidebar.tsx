@@ -26,7 +26,7 @@ const navItems: NavItem[] = [
   {
     icon: LayoutDashboard,
     label: "Dashboard",
-    href: "#",
+    href: "/",
   },
   {
     icon: MessageSquare,
@@ -41,7 +41,7 @@ const navItems: NavItem[] = [
   {
     icon: Settings,
     label: "Preferences",
-    href: "#",
+    href: "/preferences",
   },
   {
     icon: Archive,
@@ -75,11 +75,14 @@ export function Sidebar() {
     router.push("/sign-in")
   }
 
-  const handleItemClick = (label: string, hasSubItems: boolean) => {
-    if (hasSubItems) {
-      setExpandedItem(expandedItem === label ? null : label)
+  const handleItemClick = (item: NavItem) => {
+    if (item.subItems) {
+      setExpandedItem(expandedItem === item.label ? null : item.label)
     } else {
-      setActiveItem(label)
+      setActiveItem(item.label)
+      if (item.href && item.href !== "#") {
+        router.push(item.href)
+      }
     }
   }
 
@@ -100,7 +103,7 @@ export function Sidebar() {
         {navItems.map((item) => (
           <div key={item.label}>
             <button
-              onClick={() => handleItemClick(item.label, !!item.subItems)}
+              onClick={() => handleItemClick(item)}
               className={cn(
                 "flex w-full items-center rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                 activeItem === item.label

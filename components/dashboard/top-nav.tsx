@@ -2,8 +2,11 @@
 
 import { Search, Bell, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 export function TopNav() {
+  const router = useRouter()
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/95 px-6 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       {/* Search Bar */}
@@ -27,6 +30,7 @@ export function TopNav() {
           variant="ghost"
           size="icon"
           className="relative text-muted-foreground hover:text-foreground"
+          onClick={() => router.push("/notifications")}
         >
           <Bell className="h-5 w-5" />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive" />

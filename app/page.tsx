@@ -2,7 +2,6 @@ import { Sidebar } from "@/components/dashboard/sidebar"
 import { TopNav } from "@/components/dashboard/top-nav"
 import { StatsCards } from "@/components/dashboard/stats-cards"
 import { RecentLeads } from "@/components/dashboard/recent-leads"
-import { ActivityFeed } from "@/components/dashboard/activity-feed"
 
 export default function DashboardPage() {
   return (
@@ -33,18 +32,10 @@ export default function DashboardPage() {
             <StatsCards />
           </section>
 
-          {/* Content Grid */}
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* Recent Leads - Takes 2 columns */}
-            <div className="lg:col-span-2">
-              <RecentLeads />
-            </div>
-
-            {/* Activity Feed - Takes 1 column */}
-            <div>
-              <ActivityFeed />
-            </div>
-          </div>
+          {/* Recent Leads - Full Width */}
+          <section>
+            <RecentLeads />
+          </section>
         </main>
       </div>
     </div>

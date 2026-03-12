@@ -32,7 +32,7 @@ const navItems: NavItem[] = [
   {
     icon: Activity,
     label: "Recent Activity",
-    href: "#",
+    href: "/activity",
   },
   {
     icon: MessageSquare,

@@ -10,6 +10,7 @@ import {
   Archive,
   ChevronRight,
   LogOut,
+  Linkedin,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -34,6 +35,7 @@ const navItems: NavItem[] = [
     subItems: [
       { icon: MessageSquare, label: "WhatsApp", href: "#" },
       { icon: Mail, label: "Mail", href: "#" },
+      { icon: Linkedin, label: "LinkedIn", href: "#" },
     ],
   },
   {

@@ -11,6 +11,7 @@ import {
   ChevronRight,
   LogOut,
   Linkedin,
+  Activity,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -27,6 +28,11 @@ const navItems: NavItem[] = [
     icon: LayoutDashboard,
     label: "Dashboard",
     href: "/",
+  },
+  {
+    icon: Activity,
+    label: "Recent Activity",
+    href: "#",
   },
   {
     icon: MessageSquare,

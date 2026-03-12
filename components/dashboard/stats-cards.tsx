@@ -23,46 +23,42 @@ function StatCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-card p-5 transition-colors",
+        "flex aspect-square flex-col items-center justify-center rounded-xl border border-border bg-card p-4 transition-colors",
         urgent && "border-destructive/50"
       )}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-muted-foreground">{title}</p>
-          <p
-            className={cn(
-              "mt-2 text-3xl font-bold tracking-tight",
-              urgent ? "text-destructive" : "text-card-foreground"
-            )}
-          >
-            {value}
-          </p>
-        </div>
-        <div
+      <div
+        className={cn(
+          "flex h-10 w-10 items-center justify-center rounded-lg",
+          urgent ? "bg-destructive/10" : "bg-primary/10"
+        )}
+      >
+        <Icon
           className={cn(
-            "flex h-10 w-10 items-center justify-center rounded-lg",
-            urgent ? "bg-destructive/10" : "bg-primary/10"
+            "h-5 w-5",
+            urgent ? "text-destructive" : "text-primary"
           )}
-        >
-          <Icon
-            className={cn(
-              "h-5 w-5",
-              urgent ? "text-destructive" : "text-primary"
-            )}
-          />
-        </div>
+        />
       </div>
-      <div className="mt-4 flex items-center gap-2">
+      <p
+        className={cn(
+          "mt-3 text-2xl font-bold tracking-tight",
+          urgent ? "text-destructive" : "text-card-foreground"
+        )}
+      >
+        {value}
+      </p>
+      <p className="mt-1 text-xs font-medium text-muted-foreground">{title}</p>
+      <div className="mt-2 flex items-center gap-1">
         {changeType === "positive" && (
-          <TrendingUp className="h-4 w-4 text-emerald-500" />
+          <TrendingUp className="h-3 w-3 text-emerald-500" />
         )}
         {changeType === "negative" && (
-          <TrendingDown className="h-4 w-4 text-destructive" />
+          <TrendingDown className="h-3 w-3 text-destructive" />
         )}
         <span
           className={cn(
-            "text-sm font-medium",
+            "text-xs font-medium",
             changeType === "positive" && "text-emerald-500",
             changeType === "negative" && "text-destructive",
             changeType === "neutral" && "text-muted-foreground"
@@ -70,7 +66,6 @@ function StatCard({
         >
           {change}
         </span>
-        <span className="text-sm text-muted-foreground">vs last week</span>
       </div>
     </div>
   )
@@ -103,7 +98,7 @@ export function StatsCards() {
   ]
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="flex gap-4">
       {stats.map((stat) => (
         <StatCard key={stat.title} {...stat} />
       ))}

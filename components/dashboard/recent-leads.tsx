@@ -11,7 +11,6 @@ interface Lead {
   source: "whatsapp" | "email"
   status: "new" | "contacted" | "qualified" | "urgent"
   deadline: string
-  value: string
 }
 
 const leads: Lead[] = [
@@ -22,7 +21,6 @@ const leads: Lead[] = [
     source: "whatsapp",
     status: "urgent",
     deadline: "Today",
-    value: "$45,000",
   },
   {
     id: "2",
@@ -31,7 +29,6 @@ const leads: Lead[] = [
     source: "email",
     status: "new",
     deadline: "Tomorrow",
-    value: "$28,500",
   },
   {
     id: "3",
@@ -40,7 +37,6 @@ const leads: Lead[] = [
     source: "whatsapp",
     status: "contacted",
     deadline: "In 3 days",
-    value: "$67,200",
   },
   {
     id: "4",
@@ -49,7 +45,6 @@ const leads: Lead[] = [
     source: "email",
     status: "qualified",
     deadline: "In 5 days",
-    value: "$89,000",
   },
   {
     id: "5",
@@ -58,7 +53,6 @@ const leads: Lead[] = [
     source: "whatsapp",
     status: "urgent",
     deadline: "Today",
-    value: "$32,750",
   },
 ]
 
@@ -97,7 +91,6 @@ export function RecentLeads() {
               <th className="px-6 py-3 font-medium">Source</th>
               <th className="px-6 py-3 font-medium">Status</th>
               <th className="px-6 py-3 font-medium">Deadline</th>
-              <th className="px-6 py-3 font-medium text-right">Value</th>
               <th className="px-6 py-3 font-medium"></th>
             </tr>
           </thead>
@@ -157,11 +150,6 @@ export function RecentLeads() {
                     )}
                   >
                     {lead.deadline}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <span className="font-medium text-card-foreground">
-                    {lead.value}
                   </span>
                 </td>
                 <td className="px-6 py-4">

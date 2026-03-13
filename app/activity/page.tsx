@@ -1,7 +1,7 @@
 "use client"
 
-import { Sidebar } from "@/components/dashboard/sidebar"
-import { TopNav } from "@/components/dashboard/top-nav"
+import { MobileNav } from "@/components/dashboard/mobile-nav"
+import { MobileHeader } from "@/components/dashboard/mobile-header"
 import { MessageSquare, Mail, Calendar, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -79,22 +79,6 @@ const activities: Activity[] = [
     time: "2 days ago",
     date: "This Week",
   },
-  {
-    id: "9",
-    type: "deadline",
-    title: "Contract deadline",
-    description: "DataSync Labs contract expires soon",
-    time: "3 days ago",
-    date: "This Week",
-  },
-  {
-    id: "10",
-    type: "email",
-    title: "Proposal opened",
-    description: "TechFlow Inc opened your proposal",
-    time: "4 days ago",
-    date: "This Week",
-  },
 ]
 
 const iconMap = {
@@ -125,66 +109,62 @@ export default function ActivityPage() {
   )
 
   return (
-    <div className="min-h-screen bg-background">
-      <Sidebar />
+    <div className="flex min-h-screen flex-col bg-background">
+      <MobileHeader />
 
-      <div className="pl-16">
-        <TopNav />
+      <main className="flex-1 overflow-y-auto px-4 pb-24 pt-4">
+        <div className="mb-6">
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
+            Activity
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Track all your latest interactions
+          </p>
+        </div>
 
-        <main className="p-6">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              Recent Activity
-            </h1>
-            <p className="mt-1 text-muted-foreground">
-              Track all your latest interactions and updates
-            </p>
-          </div>
-
-          <div className="max-w-3xl space-y-8">
-            {Object.entries(groupedActivities).map(([date, items]) => (
-              <div key={date}>
-                <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-muted-foreground">
-                  {date}
-                </h2>
-                <div className="rounded-xl border border-border bg-card">
-                  <div className="divide-y divide-border/50">
-                    {items.map((activity) => {
-                      const Icon = iconMap[activity.type]
-                      return (
-                        <div
-                          key={activity.id}
-                          className="flex items-start gap-4 px-6 py-4 transition-colors hover:bg-muted/30"
-                        >
-                          <div
-                            className={cn(
-                              "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
-                              iconStyles[activity.type]
-                            )}
-                          >
-                            <Icon className="h-5 w-5" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="font-medium text-card-foreground">
-                              {activity.title}
-                            </p>
-                            <p className="mt-0.5 text-sm text-muted-foreground">
-                              {activity.description}
-                            </p>
-                          </div>
-                          <span className="shrink-0 text-xs text-muted-foreground">
-                            {activity.time}
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
+        <div className="space-y-6">
+          {Object.entries(groupedActivities).map(([date, items]) => (
+            <div key={date}>
+              <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                {date}
+              </h2>
+              <div className="space-y-2">
+                {items.map((activity) => {
+                  const Icon = iconMap[activity.type]
+                  return (
+                    <div
+                      key={activity.id}
+                      className="flex items-start gap-3 rounded-xl border border-border bg-card p-4"
+                    >
+                      <div
+                        className={cn(
+                          "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
+                          iconStyles[activity.type]
+                        )}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-card-foreground">
+                          {activity.title}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          {activity.description}
+                        </p>
+                      </div>
+                      <span className="shrink-0 text-[10px] text-muted-foreground">
+                        {activity.time}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
-            ))}
-          </div>
-        </main>
-      </div>
+            </div>
+          ))}
+        </div>
+      </main>
+
+      <MobileNav />
     </div>
   )
 }

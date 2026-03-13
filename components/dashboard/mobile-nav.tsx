@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
-  MessageSquare,
+  Bell,
   Activity,
   Settings,
   Plus,
@@ -33,9 +33,9 @@ const navItems: NavItem[] = [
     href: "#add",
   },
   {
-    icon: MessageSquare,
-    label: "Messages",
-    href: "#messages",
+    icon: Bell,
+    label: "Alerts",
+    href: "/notifications",
   },
   {
     icon: Settings,

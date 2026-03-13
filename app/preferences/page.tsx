@@ -1,15 +1,43 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { MobileNav } from "@/components/dashboard/mobile-nav"
 import { MobileHeader } from "@/components/dashboard/mobile-header"
-import { Check, Search, Building2 } from "lucide-react"
+import { 
+  Check, 
+  Search, 
+  Building2, 
+  User, 
+  Mail, 
+  Phone, 
+  GraduationCap, 
+  Calendar, 
+  LogOut, 
+  ChevronRight,
+  Edit3
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface Company {
   id: string
   name: string
   category: string
+}
+
+interface UserProfile {
+  fullName: string
+  dateOfBirth: string
+  education: string
+  degree: string
+  institution: string
+  graduationYear: string
+}
+
+interface AuthData {
+  email?: string
+  phone?: string
+  method: "email" | "phone" | "google"
 }
 
 const techCompanies: Company[] = [
@@ -36,14 +64,32 @@ const techCompanies: Company[] = [
 const categories = ["All", "Big Tech", "Enterprise", "Chips", "Fintech", "Growth"]
 
 export default function PreferencesPage() {
+  const router = useRouter()
   const [selectedCompanies, setSelectedCompanies] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [activeCategory, setActiveCategory] = useState("All")
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [auth, setAuth] = useState<AuthData | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem("chattrack_keywords")
-    if (stored) {
-      setSelectedCompanies(JSON.parse(stored))
+    // Load stored companies
+    const storedCompanies = localStorage.getItem("chattrack_keywords")
+    if (storedCompanies) {
+      setSelectedCompanies(JSON.parse(storedCompanies))
+    }
+
+    // Load auth data
+    const storedAuth = localStorage.getItem("chattrack_auth")
+    if (storedAuth) {
+      setAuth(JSON.parse(storedAuth))
+      setIsLoggedIn(true)
+    }
+
+    // Load profile data
+    const storedProfile = localStorage.getItem("chattrack_profile")
+    if (storedProfile) {
+      setProfile(JSON.parse(storedProfile))
     }
   }, [])
 
@@ -57,11 +103,33 @@ export default function PreferencesPage() {
     })
   }
 
+  const handleSignOut = () => {
+    localStorage.removeItem("chattrack_auth")
+    localStorage.removeItem("chattrack_profile")
+    setAuth(null)
+    setProfile(null)
+    setIsLoggedIn(false)
+  }
+
+  const handleSignIn = () => {
+    router.push("/signin")
+  }
+
   const filteredCompanies = techCompanies.filter((company) => {
     const matchesSearch = company.name.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = activeCategory === "All" || company.category === activeCategory
     return matchesSearch && matchesCategory
   })
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return ""
+    const date = new Date(dateString)
+    return date.toLocaleDateString("en-US", { 
+      year: "numeric", 
+      month: "long", 
+      day: "numeric" 
+    })
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -73,101 +141,203 @@ export default function PreferencesPage() {
             Settings
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Track companies for notifications
+            Manage your account and preferences
           </p>
         </div>
 
-        {/* Stats */}
-        <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-card p-3">
-          <Building2 className="h-4 w-4 text-primary" />
-          <span className="text-sm">
-            <span className="font-semibold">{selectedCompanies.length}</span>
-            <span className="text-muted-foreground"> / {techCompanies.length} companies</span>
-          </span>
-        </div>
+        {/* Profile Section */}
+        <div className="mb-6">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Account
+          </h2>
 
-        {/* Search */}
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search companies..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-border bg-input py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          />
-        </div>
+          {isLoggedIn && profile ? (
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              {/* Profile Header */}
+              <div className="flex items-center gap-3 p-4 border-b border-border">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
+                  {profile.fullName ? profile.fullName.charAt(0).toUpperCase() : "U"}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-foreground truncate">{profile.fullName}</p>
+                  <p className="text-sm text-muted-foreground truncate">
+                    {auth?.email || (auth?.phone ? `+91 ${auth.phone}` : "")}
+                  </p>
+                </div>
+                <button className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-muted-foreground active:scale-95">
+                  <Edit3 className="h-4 w-4" />
+                </button>
+              </div>
 
-        {/* Category Tabs - Horizontal Scroll */}
-        <div className="mb-4 flex gap-2 overflow-x-auto scrollbar-hide">
-          {categories.map((category) => (
+              {/* Profile Details */}
+              <div className="divide-y divide-border">
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                    <Calendar className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-muted-foreground">Date of Birth</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {formatDate(profile.dateOfBirth)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-3/10">
+                    <GraduationCap className="h-4 w-4 text-chart-3" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-muted-foreground">Education</p>
+                    <p className="text-sm font-medium text-foreground">
+                      {profile.education} - {profile.degree}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 px-4 py-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-chart-4/10">
+                    <Building2 className="h-4 w-4 text-chart-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-muted-foreground">Institution</p>
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {profile.institution} ({profile.graduationYear})
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleSignOut}
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left active:bg-secondary/50"
+                >
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-destructive/10">
+                    <LogOut className="h-4 w-4 text-destructive" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-destructive">Sign Out</p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </div>
+            </div>
+          ) : (
             <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={cn(
-                "shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
-                activeCategory === category
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-muted-foreground"
-              )}
+              onClick={handleSignIn}
+              className="flex w-full items-center gap-4 rounded-xl border border-border bg-card p-4 text-left transition-all active:scale-[0.98]"
             >
-              {category}
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20">
+                <User className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-foreground">Sign In</p>
+                <p className="text-sm text-muted-foreground">
+                  Sign in to save your preferences
+                </p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </button>
-          ))}
+          )}
         </div>
 
-        {/* Companies Grid */}
-        <div className="grid grid-cols-2 gap-2">
-          {filteredCompanies.map((company) => {
-            const isSelected = selectedCompanies.includes(company.id)
-            return (
+        {/* Companies Section */}
+        <div>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Track Companies
+          </h2>
+
+          {/* Stats */}
+          <div className="mb-4 flex items-center gap-2 rounded-lg border border-border bg-card p-3">
+            <Building2 className="h-4 w-4 text-primary" />
+            <span className="text-sm">
+              <span className="font-semibold">{selectedCompanies.length}</span>
+              <span className="text-muted-foreground"> / {techCompanies.length} companies</span>
+            </span>
+          </div>
+
+          {/* Search */}
+          <div className="relative mb-4">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search companies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-lg border border-border bg-input py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+
+          {/* Category Tabs - Horizontal Scroll */}
+          <div className="mb-4 flex gap-2 overflow-x-auto scrollbar-hide">
+            {categories.map((category) => (
               <button
-                key={company.id}
-                onClick={() => toggleCompany(company.id)}
+                key={category}
+                onClick={() => setActiveCategory(category)}
                 className={cn(
-                  "flex items-center gap-2 rounded-xl border p-3 text-left transition-all active:scale-[0.98]",
-                  isSelected
-                    ? "border-primary bg-primary/10"
-                    : "border-border bg-card"
+                  "shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+                  activeCategory === category
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground"
                 )}
               >
-                <div
-                  className={cn(
-                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold",
-                    isSelected
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-secondary text-muted-foreground"
-                  )}
-                >
-                  {company.name.substring(0, 2).toUpperCase()}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-foreground">
-                    {company.name}
-                  </p>
-                  <p className="text-[10px] text-muted-foreground">{company.category}</p>
-                </div>
-                <div
-                  className={cn(
-                    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
-                    isSelected
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-muted-foreground/30"
-                  )}
-                >
-                  {isSelected && <Check className="h-3 w-3" />}
-                </div>
+                {category}
               </button>
-            )
-          })}
-        </div>
-
-        {filteredCompanies.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Building2 className="mb-4 h-10 w-10 text-muted-foreground/50" />
-            <p className="text-sm text-muted-foreground">No companies found</p>
+            ))}
           </div>
-        )}
+
+          {/* Companies Grid */}
+          <div className="grid grid-cols-2 gap-2">
+            {filteredCompanies.map((company) => {
+              const isSelected = selectedCompanies.includes(company.id)
+              return (
+                <button
+                  key={company.id}
+                  onClick={() => toggleCompany(company.id)}
+                  className={cn(
+                    "flex items-center gap-2 rounded-xl border p-3 text-left transition-all active:scale-[0.98]",
+                    isSelected
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-card"
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold",
+                      isSelected
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-muted-foreground"
+                    )}
+                  >
+                    {company.name.substring(0, 2).toUpperCase()}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {company.name}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">{company.category}</p>
+                  </div>
+                  <div
+                    className={cn(
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
+                      isSelected
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted-foreground/30"
+                    )}
+                  >
+                    {isSelected && <Check className="h-3 w-3" />}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+
+          {filteredCompanies.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Building2 className="mb-4 h-10 w-10 text-muted-foreground/50" />
+              <p className="text-sm text-muted-foreground">No companies found</p>
+            </div>
+          )}
+        </div>
       </main>
 
       <MobileNav />
